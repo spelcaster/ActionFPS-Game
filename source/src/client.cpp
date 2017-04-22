@@ -581,6 +581,44 @@ void c2sinfo(playerent *d)                  // send update to the server
     lastupdate = totalmillis;
 }
 
+string &getversiondescription()
+{
+    char platform[] =
+
+#ifdef WIN32
+    "Windows"
+#elif __APPLE__
+    "Mac"
+#elif __linux__
+    "Linux"
+#else
+    "Unknown"
+#endif
+
+#ifdef __clang__
+    ", clang"
+#elif __GNUC__
+    ", gcc"
+#elif _MSC_VER
+    ", msvc"
+#endif
+
+#ifdef _DEBUG
+    ", debug"
+#endif
+    ;
+
+    static string versiondescription;
+
+#ifdef AF_REVISION
+    formatstring(versiondescription)("revision %s (%s)", AF_REVISION, platform);
+#else
+    formatstring(versiondescription)("version %d (%s)", AF_VERSION, platform);
+#endif
+
+    return versiondescription;
+}
+
 int getbuildtype()
 {
     return (isbigendian() ? 0x80 : 0 )|(adler((unsigned char *)guns, sizeof(guns)) % 31 << 8)|
@@ -656,6 +694,8 @@ void writeauthkey()
     delete f;
 }
 
+
+
 void sendintro()
 {
     extern char *authid;
@@ -663,8 +703,7 @@ void sendintro()
 
     packetbuf p(MAXTRANS, ENET_PACKET_FLAG_RELIABLE);
     putint(p, SV_CONNECT);
-    putint(p, AF_VERSION);
-    putint(p, getbuildtype());
+    sendstring(getversiondescription(), p);
     sendstring(player1->name, p);
     sendstring(defaultgroup, p);
     sendstring(genpwdhash(player1->name, clientpassword, sessionid), p);
