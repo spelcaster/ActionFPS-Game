@@ -109,6 +109,7 @@
       <TypeLibraryName>.\Release/cube.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
+      <AdditionalOptions>%(AdditionalOptions) $(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -168,7 +169,7 @@
       <TypeLibraryName>.\Debug/cube.tlb</TypeLibraryName>
     </Midl>
     <ClCompile>
-      <AdditionalOptions>/GS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/GS %(AdditionalOptions) $(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\include\vorbis;..\include\ogg;..\enet\include;..\include;..\src;..\include\al;..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;ENET_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
