@@ -2,7 +2,8 @@
 
 > Game client and server for [ActionFPS](https://actionfps.com/)
 
-_See: [Development Guide](https://docs.actionfps.com/game-development-guide.html)
+_See: [ActionFPS Tutorial](https://docs.actionfps.com/tutorial.html) 
+· [Development Guide](https://docs.actionfps.com/game-development-guide.html)
 · [Contributor Guide](https://docs.actionfps.com/contributor-guide.html)_
 
 # Quickstart
