@@ -5,7 +5,7 @@
 
 
 default:
-	xcodebuild -project actionfps.xcodeproj -target actionfps -configuration Release clean build
+	xcodebuild -project actionfps.xcodeproj -target actionfps -configuration Release AF_REVISION=$(shell git describe --tags) clean build
 	rm -rf build/Release/launcher.app
 	echo your artifact:
 	ls -lsa $(PWD)/build/Release/actionfps.dmg

@@ -2,8 +2,13 @@ version: 1.0.{build}
 build:
   project: source/vcpp/cube.vcxproj
   verbosity: normal
+before_build:
+  - ps: $env:AdditionalOptions='/DAF_REVISION=\"'
+  - ps: $env:AdditionalOptions+=$(git describe --tags --always HEAD)
+  - ps: $env:AdditionalOptions+='\"'
+  - ps: echo $env:AdditionalOptions
 after_build:
-- cmd: cd source\vcpp\buildEnv && .\build_1_getfiles.bat && .\build_2_prepare.bat && .\build_3_makeinstaller.bat
+  - cmd: cd source\vcpp\buildEnv && .\build_1_getfiles.bat && .\build_2_prepare.bat && .\build_3_makeinstaller.bat
 artifacts:
   - path: source\vcpp\buildEnv\windows_client.exe
 notifications:
