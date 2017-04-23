@@ -41,7 +41,7 @@ $ ./actionfps.sh
 ### Mac
 
 1. Install XCode
-2. Dependencies with [brew](http://brew.sh): `brew install openssl jq`
+2. Dependencies with [brew](http://brew.sh): `brew install openssl`
 3. Load packages: `./install-packages.sh`
 4. Compile: `cd source/xcode && make && cd .. && cd ..`
 5. Run: `open source/xcode/build/Release/actionfps.dmg`
