@@ -9,5 +9,5 @@ if [ ! -f "$AC_TARGET" ]; then
 fi
 AC_TARGET_DIR="${TARGET}/AC-1.2.0.2"
 (cd $TARGET && tar zxf ${AC_FILE})
-cp -R ${AC_TARGET_DIR}/packages/{models,textures,audio} packages/
+cp -R ${AC_TARGET_DIR}/packages/{models,textures,audio,crosshairs} packages/
 cp -R ${AC_TARGET_DIR}/packages/maps/official packages/maps/
