@@ -54,3 +54,24 @@ $ open source/xcode/build/Release/actionfps.dmg
 This server is synchronised with the [`master` branch](https://help.github.com/articles/github-glossary/#branch).
 
 In the game, type: `/connect woop.ac 7654` or open link `actionfps://woop.ac:7654` in your browser.
+
+## Media
+
+Media in `packages` directory is separated from the repository.
+AssaultCube packages are download at installation time on Windows and Linux.
+
+This brings several benefits:
+- Licences are now clearly separated - the codebase can stay zlib.
+- Will enforce a decoupled architecture so that game releases do not depend on media releases
+  and force us to make sane choices.
+- Separation of concerns.
+- Smaller downloads and easier distribution.
+- Smaller repository.
+
+Goal would be download the media not at installation time, but at runtime.
+This would enable:
+- Versioning, repositories, etc, of individual media for improved sharing.
+  It would be possible, for example, for people to manage the lifecycle of their maps and media.
+  We would be able to fetch stuff
+- Adding new media without having to re-release the game.
+- Provide extremely fast media downloads by using CDN or BitTorrent (yes this is possible!).
