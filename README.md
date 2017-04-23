@@ -22,9 +22,9 @@ You have two download choices:
 
 ### Windows
 
-1. Install Windows Visual C++ Studio Express 2010.
-2. Open `source/vcpp/cube.vcxproj` and build "Release".
-3. Launch `actionfps_release.bat`.
+1. Install Windows Visual C++ Studio Express 2010
+2. Open `source/vcpp/cube.vcxproj` and build "Release"
+3. Launch `actionfps_release.bat`
 
 ### Linux
 
@@ -42,8 +42,9 @@ $ ./actionfps.sh
 
 1. Install XCode
 2. Dependencies with [brew](http://brew.sh): `brew install openssl jq`
-3. Compile: `cd source/xcode && make && cd .. && cd ..`
-4. Run: `open source/xcode/build/Release/actionfps.dmg`.
+3. Load packages: `./install-packages.sh`
+4. Compile: `cd source/xcode && make && cd .. && cd ..`
+5. Run: `open source/xcode/build/Release/actionfps.dmg`
 
 ## Connect to a test server
 This server is synchronised with the [`master` branch](https://help.github.com/articles/github-glossary/#branch).
