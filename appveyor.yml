@@ -10,7 +10,7 @@ before_build:
   - ps: echo $env:AdditionalOptions
 after_build:
   - cmd: appveyor DownloadFile "http://nsis.sourceforge.net/mediawiki/images/1/1c/Nsisunz.zip"
-  - ps: 7z -y -o"C:\Program Files (x86)\NSIS\Plugins\x86-ansi" x Nsisunz.zip "nsisunz/Release/nsisunz.dll";
+  - ps: 7z -y -o"C:\Program Files (x86)\NSIS\Plugins\x86-ansi" e Nsisunz.zip "nsisunz/Release/nsisunz.dll";
   - cmd: appveyor DownloadFile "http://nsis.sourceforge.net/mediawiki/images/b/b4/InetLoad.zip"
   - ps: 7z -y -o"C:\Program Files (x86)\NSIS\Plugins\x86-ansi" x InetLoad.zip InetLoad.dll;
   - cmd: cd source\vcpp\buildEnv && .\build_1_getfiles.bat && .\build_2_prepare.bat && .\build_3_makeinstaller.bat
