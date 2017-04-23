@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 TARGET=target
 mkdir -p ${TARGET}
 AC_FILE="v1.2.0.2.tar.gz"
@@ -11,4 +12,4 @@ AC_TARGET_DIR="${TARGET}/AC-1.2.0.2"
 (cd $TARGET && tar zxf ${AC_FILE})
 cp -R ${AC_TARGET_DIR}/packages/{models,textures,audio,crosshairs} packages/
 cp -R ${AC_TARGET_DIR}/packages/maps/official packages/maps/
-cp $(ls ${AC_TARGET_DIR}/packages/misc/ | grep -v icon) packages/misc/
+cp $(find ./${AC_TARGET_DIR}/packages/misc/ | grep -v startscreen | grep -v icon) packages/misc/
