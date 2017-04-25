@@ -43,7 +43,7 @@ MimeType=x-scheme-handler/actionfps
 MimeType=application/vnd.actionfps-dmo+gz
 EOF
 
-cat > "/usr/share/mime/packages/application-vnd.actionfps-dmo+gz.xml" << EOF
+cat > "~/.local/share/mime/packages/application-vnd.actionfps-dmo+gz.xml" << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
   <mime-type type="application/vnd.actionfps-dmo+gz">
@@ -53,7 +53,7 @@ cat > "/usr/share/mime/packages/application-vnd.actionfps-dmo+gz.xml" << EOF
 </mime-info>
 EOF
 
-update-mime-database /usr/share/mime
+update-mime-database ~/.local/share/mime
 
 if type "xdg-mime" &> /dev/null; then
   echo "Registering xdg-mime"
