@@ -23,6 +23,8 @@ if [ "$EXISTINGEXEC" != "" ]; then
   fi
 fi
 
+${CUBE_DIR}/install-packages.sh
+
 mkdir -p "${LAUNCHERPATH}"
 cat > "${LAUNCHERPATH}"${LAUNCHERFILE} << EOF
 [Desktop Entry]
@@ -71,4 +73,3 @@ else
   echo "For some reason, we're unable to install an ActionFPS menuitem."
   exit 1
 fi
-

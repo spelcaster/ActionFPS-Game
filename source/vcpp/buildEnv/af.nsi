@@ -114,7 +114,7 @@ FunctionEnd
 
 ; general
 
-SetCompressor /SOLID lzma
+SetCompressor lzma
 
 !define CURPATH ".\" ; must include the installer graphics and the \ac\ directory
 !define AC_FULLVERSION "v1.2.0.2"
@@ -536,6 +536,15 @@ Section "ActionFPS ${AC_FULLVERSION}" AC
 
     SetOutPath "$INSTDIR"
 
+
+    InetLoad::load "https://github.com/assaultcube/AC/archive/v1.2.0.2.zip" "$INSTDIR\ac.zip"
+
+    nsisunz::UnzipToLog "$INSTDIR\ac.zip" "$INSTDIR\ac"
+    Delete "$INSTDIR\ac.zip"
+    CreateDirectory "$INSTDIR\packages"
+    CopyFiles "$INSTDIR\ac\AC-1.2.0.2\packages" "$INSTDIR"
+    RMDir /r "$INSTDIR\ac"
+
     File /r ac\*.*
 
     WriteRegStr HKLM "Software\${AC_SHORTNAME}" "" $INSTDIR
@@ -575,6 +584,7 @@ Section "ActionFPS ${AC_FULLVERSION}" AC
 
     !insertmacro MUI_INSTALLOPTIONS_READ $R0 "InstallTypes.ini" "Field 1" "State"
     !insertmacro MUI_INSTALLOPTIONS_READ $R1 "InstallTypes.ini" "Field 2" "State"
+
 
     StrCmp $R0 "1" 0 appdatadone
         Call ConfigureWithoutAppdata

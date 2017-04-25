@@ -2,12 +2,17 @@ version: 1.0.{build}
 build:
   project: source/vcpp/cube.vcxproj
   verbosity: normal
+
 before_build:
   - ps: $env:AdditionalOptions='/DAF_REVISION=\"'
   - ps: $env:AdditionalOptions+=$(git describe --tags --always HEAD)
   - ps: $env:AdditionalOptions+='\"'
   - ps: echo $env:AdditionalOptions
 after_build:
+  - cmd: appveyor DownloadFile "http://nsis.sourceforge.net/mediawiki/images/1/1c/Nsisunz.zip"
+  - ps: 7z -y -o"C:\Program Files (x86)\NSIS\Plugins\x86-ansi" e Nsisunz.zip "nsisunz/Release/nsisunz.dll";
+  - cmd: appveyor DownloadFile "http://nsis.sourceforge.net/mediawiki/images/b/b4/InetLoad.zip"
+  - ps: 7z -y -o"C:\Program Files (x86)\NSIS\Plugins\x86-ansi" e InetLoad.zip InetLoad.dll;
   - cmd: cd source\vcpp\buildEnv && .\build_1_getfiles.bat && .\build_2_prepare.bat && .\build_3_makeinstaller.bat
 artifacts:
   - path: source\vcpp\buildEnv\windows_client.exe

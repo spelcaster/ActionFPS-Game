@@ -36,3 +36,4 @@ authkey
 
 source/vcpp/Release
 source/vcpp/Debug
+win_dependencies

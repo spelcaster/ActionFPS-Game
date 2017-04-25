@@ -10,6 +10,7 @@ machine:
     XCODE_SCHEME: symbolicator
 test:
   override:
+    - ./install-packages.sh
     - set -o pipefail && cd source/xcode && make
 general:
   artifacts:
