@@ -1,7 +1,6 @@
 // rendergl.cpp: core opengl rendering stuff
 
 #include "cube.h"
-#include "bot/bot.h"
 
 bool hasTE = false, hasMT = false, hasMDA = false, hasDRE = false, hasstencil = false, hasST2 = false, hasSTW = false, hasSTS = false, hasAF;
 
@@ -1132,10 +1131,6 @@ void gl_drawframe(int w, int h, float changelod, float curfps)
     startmodelbatches();
     renderbounceents();
     endmodelbatches();
-
-    // Added by Rick: Need todo here because of drawing the waypoints
-    WaypointClass.Think();
-    // end add
 
     drawhudgun();
 

@@ -1,7 +1,6 @@
 // client.cpp, mostly network related client game code
 
 #include "cube.h"
-#include "bot/bot.h"
 
 VAR(connected, 1, 0, 0);
 
@@ -194,7 +193,6 @@ void disconnect(int onlyclean, int async)
         player1->clientnum = -1;
         player1->lifesequence = 0;
         player1->clientrole = CR_DEFAULT;
-        kickallbots();
         loopv(players) zapplayer(players[i]);
         clearvote();
         audiomgr.clearworldsounds(false);

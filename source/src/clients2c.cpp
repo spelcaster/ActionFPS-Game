@@ -1,7 +1,6 @@
 // client processing of the incoming network stream
 
 #include "cube.h"
-#include "bot/bot.h"
 
 VARP(networkdebug, 0, 0, 1);
 #define DEBUGCOND (networkdebug==1)
@@ -732,7 +731,6 @@ void parsemessages(int cn, playerent *d, ucharbuf &p, bool demo = false)
                     if(connected) closemenu(NULL);
                     conoutf("new round starting... fight!");
                     hudeditf(HUDMSG_TIMER, "FIGHT!");
-                    if(m_botmode) BotManager.RespawnBots();
                 }
                 addmsg(SV_SPAWN, "rii", player1->lifesequence, player1->weaponsel->type);
                 player1->weaponswitch(player1->primweap);
@@ -1087,8 +1085,7 @@ void parsemessages(int cn, playerent *d, ucharbuf &p, bool demo = false)
                 int acn = getint(p);
                 playerent *alive = getclient(acn);
                 conoutf("the round is over! next round in 5 seconds...");
-                if(m_botmode && acn==-2) hudoutf("the bots have won the round!");
-                else if(acn==-1) hudoutf("everyone died!");
+                if(acn==-1) hudoutf("everyone died!");
                 else if(m_teammode) hudoutf("team %s has won the round!", team_string(alive->team));
                 else if(alive==player1) hudoutf("you are the survivor!");
                 else hudoutf("%s is the survivor!", colorname(alive));

@@ -1,7 +1,6 @@
 // weapon.cpp: all shooting and effects code
 
 #include "cube.h"
-#include "bot/bot.h"
 #include "hudgun.h"
 
 VARP(autoreload, 0, 1, 1);

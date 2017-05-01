@@ -1,7 +1,6 @@
 // clientgame.cpp: core game related stuff
 
 #include "cube.h"
-#include "bot/bot.h"
 
 int nextmode = 0;   // nextmode becomes gamemode after next map load
 VAR(gamemode, 1, 0, 0);
@@ -228,7 +227,6 @@ void curmodeattr(char *attr)
     if(!strcmp(attr, "team")) { intret(m_teammode); return; }
     else if(!strcmp(attr, "arena")) { intret(m_arena); return; }
     else if(!strcmp(attr, "flag")) { intret(m_flags); return; }
-    else if(!strcmp(attr, "bot")) { intret(m_botmode); return; }
     intret(0);
 }
 
@@ -265,7 +263,7 @@ void playerinfo(int *cn, const char *attr)
     playerent *p = clientnum < 0 ? player1 : getclient(clientnum);
     if(!p)
     {
-        if(!m_botmode && multiplayer(false)) // bot clientnums are still glitchy, causing this message to sometimes appear in offline/singleplayer when it shouldn't??? -Bukz 2012may
+        if(multiplayer(false))
             conoutf("invalid clientnum cn: %d attr: %s", clientnum, attr);
         return;
     }
@@ -425,42 +423,6 @@ playerent *newplayerent()                 // create a new blank player
     weapon::equipplayer(d); // flowtron : avoid overwriting d->spawnstate(gamemode) stuff from the following line (this used to be called afterwards)
     spawnstate(d);
     return d;
-}
-
-botent *newbotent()                 // create a new blank player
-{
-    botent *d = new botent;
-    d->lastupdate = totalmillis;
-    setskin(d, rnd(6));
-    weapon::equipplayer(d);
-    spawnstate(d); // move like above
-    int nextcn = 0;
-    bool lukin = true;
-    while(lukin)
-    {
-        bool used = nextcn==getclientnum();
-        loopv(players) if(!used && players[i]) if(players[i]->clientnum==nextcn) used = true;
-        if(!used) lukin = false; else nextcn++;
-    }
-    loopv(players) if(i!=getclientnum() && !players[i])
-    {
-        players[i] = d;
-        d->clientnum = nextcn;
-        return d;
-    }
-    if(players.length()==getclientnum()) players.add(NULL);
-    d->clientnum = nextcn;
-    players.add(d);
-    return d;
-}
-
-void freebotent(botent *d)
-{
-    loopv(players) if(players[i]==d)
-    {
-        DELETEP(players[i]);
-        players.remove(i);
-    }
 }
 
 VAR(lastpm, 1, -1, 0);
@@ -644,9 +606,6 @@ void updateworld(int curtime, int lastmillis)        // main game update loop
     gets2c();
     showrespawntimer();
 
-    // Added by Rick: let bots think
-    if(m_botmode) BotManager.Think();
-
     movelocalplayer();
     c2sinfo(player1);   // do this last, to reduce the effective frame lag
 }
@@ -741,7 +700,7 @@ void respawnself()
     {
         if(team_isspect(player1->team))
         {
-            addmsg(SV_SWITCHTEAM, "ri", m_teammode ? teamatoi(BotManager.GetBotTeam()) : rnd(2));
+            addmsg(SV_SWITCHTEAM, "ri", rnd(2));
         }
         showscores(false);
         setscope(false);
@@ -1143,8 +1102,6 @@ void startmap(const char *name, bool reset, bool norespawn)   // called just aft
     if(norespawn) return;
 
     sendmapidenttoserver = true;
-    if(m_botmode) BotManager.BeginMap(name);
-    else kickallbots();
     clearbounceents();
     preparectf(!m_flags);
     suicided = -1;
@@ -1173,7 +1130,7 @@ void startmap(const char *name, bool reset, bool norespawn)   // called just aft
     bool noflags = (m_ctf || m_ktf) && (!numflagspawn[0] || !numflagspawn[1]);
     if(*clientmap) conoutf("game mode is \"%s\"%s", modestr(gamemode, modeacronyms > 0), noflags ? " - \f2but there are no flag bases on this map" : "");
 
-    if(showmodedescriptions && (multiplayer(false) || m_botmode))
+    if(showmodedescriptions && (multiplayer(false)))
     {
         loopv(gmdescs) if(gmdescs[i].mode == gamemode) conoutf("\f1%s", gmdescs[i].desc);
     }
@@ -1551,12 +1508,6 @@ void setnext(char *mode, char *map)
         switch(i)
         {
             case GMODE_COOPEDIT:
-            case GMODE_BOTTEAMDEATHMATCH:
-            case GMODE_BOTDEATHMATCH:
-            case GMODE_BOTONESHOTONEKILL:
-            case GMODE_BOTLSS:
-            case GMODE_BOTPISTOLFRENZY:
-            case GMODE_BOTTEAMONESHOTONKILL:
                 continue;
         }
         if(!strcmp(mode, modestrings[i]))
@@ -1687,7 +1638,7 @@ void spectate()
 void setfollowplayer(int cn)
 {
     // silently ignores invalid player-cn value passed
-    if(players.inrange(cn) && players[cn] && !m_botmode)
+    if(players.inrange(cn) && players[cn])
     {
         if(!(m_teammode && player1->team != TEAM_SPECT && !watchingdemo && team_base(players[cn]->team) != team_base(player1->team)))
         {
@@ -1701,7 +1652,7 @@ void setfollowplayer(int cn)
 void spectatemode(int mode)
 {
     if((player1->state != CS_DEAD && player1->state != CS_SPECTATE && !team_isspect(player1->team)) || (!m_teammode && !team_isspect(player1->team) && m_match(servstate.mastermode))) return;  // during ffa matches only SPECTATORS can spectate
-    if(mode == player1->spectatemode || (m_botmode && mode != SM_FLY)) return;
+    if(mode == player1->spectatemode || (mode != SM_FLY)) return;
     showscores(false);
     switch(mode)
     {
@@ -1737,20 +1688,15 @@ void spectatemode(int mode)
 
 void togglespect() // cycle through all spectating modes
 {
-    if(m_botmode)
-        spectatemode(SM_FLY);
-    else
-    {
-        int mode;
-        if(player1->spectatemode==SM_NONE) mode = SM_FOLLOW1ST; // start with 1st person spect
-        else mode = SM_FOLLOW1ST + ((player1->spectatemode - SM_FOLLOW1ST + 1) % (SM_OVERVIEW-SM_FOLLOW1ST)); // replace SM_OVERVIEW by SM_NUM to enable overview mode
-        spectatemode(mode);
-    }
+    int mode;
+    if(player1->spectatemode==SM_NONE) mode = SM_FOLLOW1ST; // start with 1st person spect
+    else mode = SM_FOLLOW1ST + ((player1->spectatemode - SM_FOLLOW1ST + 1) % (SM_OVERVIEW-SM_FOLLOW1ST)); // replace SM_OVERVIEW by SM_NUM to enable overview mode
+    spectatemode(mode);
 }
 
 void changefollowplayer(int shift)
 {
-    if(!m_botmode) updatefollowplayer(shift);
+    updatefollowplayer(shift);
 }
 
 COMMAND(spectate, "");
