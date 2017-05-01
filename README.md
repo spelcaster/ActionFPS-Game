@@ -16,7 +16,7 @@ You have two choices:
 
 You have two download choices:
 * Directly from [automatically built development release](https://github.com/ActionFPS/ActionFPS-Game/releases).
-* Through [ActionFPS Play page](https://actionfps.com/play).
+* Through [ActionFPS Play page](https://actionfps.com/play/).
 
 ## Run from source
 
