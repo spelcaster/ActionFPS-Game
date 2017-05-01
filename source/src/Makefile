@@ -37,7 +37,7 @@ ifdef AFREVISION
 	override CXXFLAGS+= -D AF_REVISION=\"$(AFREVISION)\"
 endif
 
-INCLUDES= -I. -Ibot -I../enet/include
+INCLUDES= -I. -I../enet/include
 
 STRIP=
 ifeq (,$(findstring -g,$(CXXFLAGS)))
@@ -103,13 +103,7 @@ CLIENT_OBJS= \
 	worldocull.o \
 	worldrender.o \
 	zip.o \
-	bot/bot.o \
-	bot/botmanager.o \
-	bot/bot_ai.o \
-	bot/bot_util.o \
-	bot/bot_waypoint.o \
-	bot/ac_bot.o \
-	bot/ac_bot_ai.o
+
 
 CLIENT_PCH= cube.h.gch
 
@@ -217,9 +211,9 @@ endif
 install: client_install server_install
 
 depend:
-	makedepend -Y -I. -Ibot $(subst .o,.cpp,$(CLIENT_OBJS))
-	makedepend -a -o.h.gch -Y -I. -Ibot $(subst .h.gch,.h,$(CLIENT_PCH))
-	makedepend -a -o-standalone.o -Y -I. -Ibot $(subst -standalone.o,.cpp,$(SERVER_OBJS))
+	makedepend -Y -I. $(subst .o,.cpp,$(CLIENT_OBJS))
+	makedepend -a -o.h.gch -Y -I. $(subst .h.gch,.h,$(CLIENT_PCH))
+	makedepend -a -o-standalone.o -Y -I. $(subst -standalone.o,.cpp,$(SERVER_OBJS))
 	makedepend -a -o-standalone.o -Y -I. $(subst -standalone.o,.cpp,$(filter-out $(SERVER_OBJS), $(MASTER_OBJS)))
 
 # DO NOT DELETE
@@ -235,16 +229,13 @@ autodownload.o: weapon.h entity.h world.h command.h varray.h vote.h console.h
 autodownload.o: protos.h
 client.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 client.o: weapon.h entity.h world.h command.h varray.h vote.h
-client.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-client.o: bot/ac_bot.h
+client.o: console.h protos.h 
 clientgame.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 clientgame.o: weapon.h entity.h world.h command.h varray.h vote.h
-clientgame.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-clientgame.o: bot/ac_bot.h
+clientgame.o: console.h protos.h
 clients2c.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 clients2c.o: weapon.h entity.h world.h command.h varray.h vote.h
-clients2c.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-clients2c.o: bot/ac_bot.h
+clients2c.o: console.h protos.h
 command.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 command.o: weapon.h entity.h world.h command.h varray.h vote.h
 command.o: console.h protos.h
@@ -288,8 +279,7 @@ rendercubes.o: weapon.h entity.h world.h command.h varray.h vote.h
 rendercubes.o: console.h protos.h
 rendergl.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 rendergl.o: weapon.h entity.h world.h command.h varray.h vote.h
-rendergl.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-rendergl.o: bot/ac_bot.h
+rendergl.o: console.h protos.h
 renderhud.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 renderhud.o: weapon.h entity.h world.h command.h varray.h vote.h
 renderhud.o: console.h protos.h
@@ -340,11 +330,10 @@ water.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h weapon.h
 water.o: entity.h world.h command.h varray.h vote.h console.h protos.h
 weapon.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 weapon.o: weapon.h entity.h world.h command.h varray.h vote.h
-weapon.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-weapon.o: bot/ac_bot.h hudgun.h
+weapon.o: console.h protos.h
+weapon.o: hudgun.h
 world.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h weapon.h
 world.o: entity.h world.h command.h varray.h vote.h console.h protos.h
-world.o: bot/bot.h bot/bot_util.h bot/bot_waypoint.h bot/ac_bot.h
 worldio.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
 worldio.o: weapon.h entity.h world.h command.h varray.h vote.h
 worldio.o: console.h protos.h
@@ -359,34 +348,6 @@ worldrender.o: weapon.h entity.h world.h command.h varray.h vote.h
 worldrender.o: console.h protos.h
 zip.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h weapon.h
 zip.o: entity.h world.h command.h varray.h vote.h console.h protos.h
-bot/bot.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/bot.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/bot.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-bot/bot.o: bot/ac_bot.h
-bot/botmanager.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/botmanager.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/botmanager.o: console.h protos.h bot/bot.h bot/bot_util.h
-bot/botmanager.o: bot/bot_waypoint.h bot/ac_bot.h
-bot/bot_ai.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/bot_ai.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/bot_ai.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-bot/bot_ai.o: bot/ac_bot.h
-bot/bot_util.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/bot_util.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/bot_util.o: console.h protos.h bot/bot.h bot/bot_util.h
-bot/bot_util.o: bot/bot_waypoint.h bot/ac_bot.h
-bot/bot_waypoint.o: cube.h platform.h tools.h geom.h model.h protocol.h
-bot/bot_waypoint.o: sound.h weapon.h entity.h world.h command.h
-bot/bot_waypoint.o: varray.h vote.h console.h protos.h bot/bot.h
-bot/bot_waypoint.o: bot/bot_util.h bot/bot_waypoint.h bot/ac_bot.h
-bot/ac_bot.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/ac_bot.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/ac_bot.o: console.h protos.h bot/bot.h bot/bot_util.h bot/bot_waypoint.h
-bot/ac_bot.o: bot/ac_bot.h
-bot/ac_bot_ai.o: cube.h platform.h tools.h geom.h model.h protocol.h sound.h
-bot/ac_bot_ai.o: weapon.h entity.h world.h command.h varray.h vote.h
-bot/ac_bot_ai.o: console.h protos.h bot/bot.h bot/bot_util.h
-bot/ac_bot_ai.o: bot/bot_waypoint.h bot/ac_bot.h
 
 cube.h.gch: platform.h tools.h geom.h model.h protocol.h sound.h weapon.h
 cube.h.gch: entity.h world.h command.h varray.h vote.h console.h

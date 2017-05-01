@@ -1235,29 +1235,6 @@ void arenacheck()
         return;
     }
 
-#ifndef STANDALONE
-    if(m_botmode && clients[0]->type==ST_LOCAL)
-    {
-        int enemies = 0, alive_enemies = 0;
-        playerent *alive = NULL;
-        loopv(players) if(players[i] && (!m_teammode || players[i]->team == team_opposite(player1->team)))
-        {
-            enemies++;
-            if(players[i]->state == CS_ALIVE)
-            {
-                alive = players[i];
-                alive_enemies++;
-            }
-        }
-        if(player1->state != CS_DEAD) alive = player1;
-        if(enemies && (!alive_enemies || player1->state == CS_DEAD))
-        {
-            sendf(-1, 1, "ri2", SV_ARENAWIN, m_teammode ? (alive ? alive->clientnum : -1) : (alive && alive->type == ENT_BOT ? -2 : player1->state == CS_ALIVE ? player1->clientnum : -1));
-            arenaround = gamemillis+5000;
-        }
-        return;
-    }
-#endif
     client *alive = NULL;
     bool dead = false;
     int lastdeath = 0;
@@ -1384,11 +1361,6 @@ int numplayers()
 #ifdef STANDALONE
     count = numclients();
 #else
-    if(m_botmode)
-    {
-        extern vector<botent *> bots;
-        loopv(bots) if(bots[i]) count++;
-    }
     if(m_demo)
     {
         count = numclients();
