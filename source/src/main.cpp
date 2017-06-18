@@ -215,6 +215,7 @@ void bmp_screenshot(const char *imagepath, bool mapshot = false)
         else
         {
             conoutf("no mapshot prepared!");
+            DELETEA(tmp);
             return;
         }
     }
@@ -440,6 +441,7 @@ void png_screenshot(const char *imagepath, bool mapshot = false)
         else
         {
             conoutf("no mapshot prepared!");
+            DELETEA(tmp);
             return;
         }
     }
