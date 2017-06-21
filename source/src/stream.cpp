@@ -924,7 +924,7 @@ stream *opengzfile(const char *filename, const char *mode, stream *file, int lev
     stream *source = file ? file : openfile(filename, mode, allow_outside_game);
     if(!source) return NULL;
     gzstream *gz = new gzstream;
-    if(!gz->open(source, mode, !file, level)) { if(!file) delete source; return NULL; }
+    if(!gz->open(source, mode, !file, level)) { if(!file) delete source; DELETEP(gz); return NULL; }
     return gz;
 }
 
