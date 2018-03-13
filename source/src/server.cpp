@@ -288,35 +288,37 @@ int findcnbyaddress(ENetAddress *address)
     return -1;
 }
 
-savedscore *findscore(client &c, bool insert)
+/*!
+ * \brief Get the client scoreboard, if it doesn't exist then insert it if
+ *        isToInsert
+ *
+ * \param[in] client& c          The client that will be search
+ * \param[in] bool    isToInsert A flag that indicates to create or not a
+ *                               scoreboard for the client
+ *
+ * \return A reference to scoreboard or NULL
+ */
+savedscore *findscore(client &c, bool isToInsert)
 {
-    if(c.type!=ST_TCPIP) return NULL;
+    if(c.type != ST_TCPIP || !c.isauthed) return NULL;
     enet_uint32 mask = ENET_HOST_TO_NET_32(m_match(mastermode) ? 0xFFFF0000 : 0xFFFFFFFF); // in match mode, reconnecting from /16 subnet is allowed
-    if(!insert)
-    {
-        loopv(clients)
-        {
-            client &o = *clients[i];
-            if(o.type!=ST_TCPIP || !o.isauthed) continue;
-            bool usermatch = !strcmp(o.userid, c.userid) || (o.peer->address.host==c.peer->address.host && !strcmp(o.name, c.name));
-            if(o.clientnum!=c.clientnum && usermatch)
-            {
-                static savedscore curscore;
-                curscore.save(o);
-                return &curscore;
-            }
-        }
-    }
+
     loopv(savedscores)
     {
-        savedscore &sc = savedscores[i];
-        if(!strcmp(sc.name, c.name) && (sc.ip & mask) == (c.peer->address.host & mask)) return &sc;
+      savedscore &sc = savedscores[i];
+      if(!strcmp(sc.name, c.name)
+        && (sc.ip & mask) == (c.peer->address.host & mask)
+        && sc.clientnum == c.clientnum) return &sc;
     }
-    if(!insert) return NULL;
-    savedscore &sc = savedscores.add();
-    copystring(sc.name, c.name);
-    sc.ip = c.peer->address.host;
-    return &sc;
+
+    if(isToInsert)
+    {
+      static savedscore curscore;
+      curscore.save(c);
+      return &curscore;
+    }
+
+    return NULL;
 }
 
 void restoreserverstate(vector<entity> &ents)   // hack: called from savegame code, only works in SP

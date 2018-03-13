@@ -333,6 +333,7 @@ struct client                   // server side version of "dynent" type
 
 struct savedscore
 {
+    int clientnum;
     string name;
     string userid;
     string identity;
@@ -349,6 +350,7 @@ struct savedscore
 
     void save(client &c)
     {
+        clientnum = c.clientnum;
         frags = c.state.frags;
         flagscore = c.state.flagscore;
         deaths = c.state.deaths;
