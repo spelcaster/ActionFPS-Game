@@ -306,9 +306,12 @@ savedscore *findscore(client &c, bool isToInsert)
     loopv(savedscores)
     {
       savedscore &sc = savedscores[i];
-      if(!strcmp(sc.name, c.name)
+
+      bool isClientScore = !strcmp(sc.name, c.name)
         && (sc.ip & mask) == (c.peer->address.host & mask)
-        && sc.clientnum == c.clientnum) return &sc;
+        && sc.clientnum == c.clientnum;
+
+      if (isClientScore) return &sc;
     }
 
     if(isToInsert)
