@@ -316,8 +316,9 @@ savedscore *findscore(client &c, bool isToInsert)
 
     if(isToInsert)
     {
-      static savedscore curscore;
+      savedscore &curscore = savedscores.add();
       curscore.save(c);
+
       return &curscore;
     }
 
